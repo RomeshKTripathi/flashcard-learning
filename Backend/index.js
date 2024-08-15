@@ -1,10 +1,12 @@
 import express from "express";
 import bodyParser from "body-parser";
-
+import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import verify from "./middleware/verify.middleware.js";
-
+dotenv.config({
+    path: ".env",
+});
 const app = express();
 
 // Middlewares
@@ -49,6 +51,6 @@ app.post("/login", verify, (req, res) => {
         });
 });
 
-app.listen(4000, () => {
-    console.log("Listening on 4000");
+app.listen(process.env.PORT, () => {
+    console.log(`Server is Running on ${process.env.PORT}`);
 });

@@ -7,7 +7,7 @@ export const useUpdateQuestion = () => {
     const updateQuestion = ({ id, question, answer }) => {
         setUpdating(true);
         fetch(`http://localhost:4000/api/v1/questions/update-question`, {
-            method: "PATCH",
+            method: "PUT",
             body: JSON.stringify({ id, question, answer }),
             headers: {
                 "Content-Type": "application/json",

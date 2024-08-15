@@ -17,6 +17,6 @@ router.route("/get-by-range").get(getQuestionsInRange);
 router.route("/count-all").get(countAllQuestions);
 router.route("/delete-by-id/:id").delete(deleteQuestion);
 router.route("/add-question").post(addQuestion);
-router.route("/update-question").patch(updateQuestion);
+router.route("/update-question").put(updateQuestion);
 
 export default router;
