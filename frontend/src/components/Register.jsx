@@ -1,14 +1,18 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import useToast from "../hooks/useToast";
 
 function Register() {
     const {
         register,
         handleSubmit,
         formState: { errors },
+        reset,
     } = useForm();
-
+    const { toastList, createToast } = useToast();
     const submit = (formData) => {
+        console.log(formData);
+
         fetch("http://localhost:4000/register", {
             method: "POST",
             body: JSON.stringify(formData),
@@ -18,35 +22,45 @@ function Register() {
         })
             .then((res) => res.json())
             .then((res) => {
-                if (res.status >= 200 && res.status < 300)
-                    console.log("User created");
-                else console.log(res.message);
+                if (res.status >= 200 && res.status < 300) {
+                    reset();
+                    createToast(
+                        "User Registerd Successfully",
+                        "success",
+                        4000,
+                        "SLIDE"
+                    );
+                } else {
+                    createToast(res.message, "information", 4000, "slide");
+                }
             })
-            .catch((err) => console.log(err));
+            .catch((err) => {
+                createToast(err.message, "error", 4000, "slide");
+            });
     };
 
     return (
         <div className="w-1/3 mx-auto pt-28">
             <form
                 onSubmit={handleSubmit(submit)}
-                className="*:placeholder:text-blue-300/80 *:px-6 *:font-semibold *:rounded-md"
+                className="*:placeholder:text-blue-600/70 *:px-6 *:font-semibold *:rounded-md"
             >
                 <input
-                    className="w-full h-14 bg-blue-600/30 border border-blue-600 text-white outline-none mb-3"
+                    className="w-full h-14 bg-blue-600/30 border border-blue-600  outline-none mb-3"
                     type="text"
                     placeholder="Enter Your name"
                     name="name"
                     {...register("name", { required: true })}
                 />
                 <input
-                    className="w-full h-14 bg-blue-600/30 border border-blue-600 text-white outline-none mb-3"
+                    className="w-full h-14 bg-blue-600/30 border border-blue-600 outline-none mb-3"
                     type="email"
                     name="email"
                     placeholder="Enter Your email"
                     {...register("email", { required: true })}
                 />
                 <input
-                    className="w-full h-14 bg-blue-600/30 border border-blue-600 text-white outline-none mb-3"
+                    className="w-full h-14 bg-blue-600/30 border border-blue-600  outline-none mb-3"
                     type="password"
                     name="password"
                     placeholder="Create Your Password"
@@ -60,6 +74,7 @@ function Register() {
                     Register
                 </button>
             </form>
+            {toastList}
         </div>
     );
 }

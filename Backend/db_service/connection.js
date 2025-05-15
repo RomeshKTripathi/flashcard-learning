@@ -6,10 +6,26 @@ class DB_Service {
         this.connection = createConnection({
             host: "localhost",
             user: "root",
-            password: "",
+            password: "Romesh@#123",
             database: "flashcards",
+            insecureAuth: true,
         });
-        this.connection.connect();
+
+        this.connection.connect((err) => {
+            if (err) {
+                console.log("Error Occured::", err);
+                this.connection.createQuery("USE flashcards");
+            } else {
+                console.log("Connected..");
+                console.log(this.connection);
+            }
+        });
+    }
+
+    checks() {
+        // create user table if not exists;
+        // this.createQuery("")
+        // create flashcards table if not exists
     }
 
     createQuery(sql) {

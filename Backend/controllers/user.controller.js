@@ -37,6 +37,7 @@ export const registerUser = async (req, res) => {
         throw new ApiError(401, "All Details are required");
     }
     const hash_password = await bcrypt.hash(password, 10);
+
     db.createQuery(`SELECT * FROM users WHERE email="${email}"`)
         .then((rows) => {
             if (rows.length == 1) {
@@ -75,5 +76,37 @@ export const registerUser = async (req, res) => {
 };
 
 export const getUserById = async (req, res) => {
-    db.createQuery("");
+    const { id } = req.params;
+    if (!id) {
+        throw new ApiError(401, "Id is required");
+    }
+    db.createQuery(`SELECT * FROM users WHERE uid = ${id}`)
+        .then((rows) => {
+            res.status(200).json(
+                new ApiResponse(
+                    rows.length ? true : false,
+                    rows.length ? rows[0] : {},
+                    rows.length ? "User Found" : "No user found"
+                )
+            );
+        })
+        .catch((err) => {
+            throw new ApiError(500, err);
+        });
+};
+
+export const loginUser = async (req, res) => {
+    const { email, password } = req.body;
+    db.loginUser({ email, password })
+        .then((data) => {
+            console.log(data);
+            res.cookie("token", data.token);
+            return res.json({
+                status: 200,
+            });
+        })
+        .catch((err) => {
+            console.log("Error :: loginUser :", err);
+            return res.json({ status: 400, message: err.message });
+        });
 };
